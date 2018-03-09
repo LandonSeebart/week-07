@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Basic JavaScript Dump</title>
+  <style>
+      .tomato {
+          color: tomato;
+      }
+
+  </style>
+</head>
+  <body>
+
+    <!-- We created an empty HTML div. Note that there is no content inside. -->
+    <div id="empty-div"></div>
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+    <script>
+        // const heading = document.createElement('h1')
+        // heading.innerHTML = 'Some heading';
+        // target.appendChild(heading);
+
+        $('#empty-div').append( "<h1>Some Heading</h1>" );
+        // $("h1").addClass("tomato");
+        $("h1").css("color", "tomato");
+
+        const target = document.getElementById('empty-div')
+        //heading.classList.add('someStyles');
+        
+        $('#empty-div').append("<div>some more stuff</div>");
+        // const newDiv = document.createElement('div');
+        // newDiv.innerHTML = 'some more stuff';
+        // target.appendChild(newDiv);
+
+
+    </script>
+  </body>
+</html>
