@@ -16,13 +16,14 @@ $(document).ready(() => {
   // Add listener to add train button and push everything to firebase on click
   $('#add-train-btn').on('click', (event) => {
     event.preventDefault();
-    const trainStartInput = $('#start-input').val().trim();
 
     // Get all the user inputs and put them in variables so we can push the to a database
     const trainName = $('#train-name-input').val().trim();
     const trainDestination = $('#destination-input').val().trim();
-    const trainStart = moment(trainStartInput).format('hh:mm');
+    const trainStart = $('#start-input').val().trim();
     const trainFrequency = $('#frequency-input').val().trim();
+
+    console.log(trainStart);
 
     // Make and object for each new train
     const newTrain = {
@@ -45,13 +46,10 @@ $(document).ready(() => {
     const trainFrequency = childSnapshot.val().frequency;
 
     // moment.js calculations
-    const trainStartConverted = moment(trainStart, 'hh:mm').subtract(1, 'years');
+    const trainStartConverted = moment(trainStart, 'HH:mm').subtract(1, 'years');
     console.log(trainStartConverted);
 
-    const currentTime = moment();
-    console.log(`CURRENT TIME: ${moment(currentTime).format('hh:mm')}`);
-
-    const diffTime = moment().diff(moment(trainStartConverted), 'minutes');
+    const diffTime = moment().diff(trainStartConverted, 'minutes');
     console.log(`DIFFERENCE IN TIME: ${diffTime}`);
 
     const trainRemainder = diffTime % trainFrequency;
@@ -60,7 +58,7 @@ $(document).ready(() => {
     const minutesTillTrain = trainFrequency - trainRemainder;
     console.log(`MINUTES TILL TRAIN: ${minutesTillTrain}`);
 
-    const nextTrain = moment().add(minutesTillTrain, 'minutes');
+    const nextTrain = moment().add(minutesTillTrain, 'minutes').format('HH:mm');
     console.log(`ARRIVAL TIME: ${moment(nextTrain).format('hh:mm')}`);
 
     $('#train-table > tbody').append(`<tr><td>${trainName}</td><td>${trainDestination}</td><td>${trainFrequency}</td>
