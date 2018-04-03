@@ -1,5 +1,3 @@
-
-
 $(document).ready(() => {
   // Initialize Firebase
   const config = {
@@ -15,13 +13,15 @@ $(document).ready(() => {
 
   const database = firebase.database();
 
+  // Add listener to add train button and push everything to firebase on click
   $('#add-train-btn').on('click', (event) => {
     event.preventDefault();
+    const trainStartInput = $('#start-input').val().trim();
 
     // Get all the user inputs and put them in variables so we can push the to a database
     const trainName = $('#train-name-input').val().trim();
     const trainDestination = $('#destination-input').val().trim();
-    const trainStart = moment($('#start-input').val().trim(), 'DD/MM/YY').format('X');
+    const trainStart = moment(trainStartInput).format('hh:mm');
     const trainFrequency = $('#frequency-input').val().trim();
 
     // Make and object for each new train
@@ -32,26 +32,38 @@ $(document).ready(() => {
       frequency: trainFrequency,
     };
 
-      // Push each new train to the database
+    // Push each new train to the database
     database.ref().push(newTrain);
   });
 
+  // Update the table when a record is added to or updated within the database
   database.ref().on('child_added', (childSnapshot, prevChildKey) => {
-    console.log(childSnapshot.val());
-
     // Store everything into a variable.
     const trainName = childSnapshot.val().name;
     const trainDestination = childSnapshot.val().destination;
     const trainStart = childSnapshot.val().start;
     const trainFrequency = childSnapshot.val().frequency;
 
-    // Show me all the train info
-    console.log(trainName);
-    console.log(trainDestination);
-    console.log(trainStart);
-    console.log(trainFrequency);
+    // moment.js calculations
+    const trainStartConverted = moment(trainStart, 'hh:mm').subtract(1, 'years');
+    console.log(trainStartConverted);
 
-    $('#train-table > tbody').append(`<tr><td>${trainName}</td><td>${trainDestination}</td><td>${
-      trainStart}</td><td>${trainFrequency}</td></tr>`);
+    const currentTime = moment();
+    console.log(`CURRENT TIME: ${moment(currentTime).format('hh:mm')}`);
+
+    const diffTime = moment().diff(moment(trainStartConverted), 'minutes');
+    console.log(`DIFFERENCE IN TIME: ${diffTime}`);
+
+    const trainRemainder = diffTime % trainFrequency;
+    console.log(trainRemainder);
+
+    const minutesTillTrain = trainFrequency - trainRemainder;
+    console.log(`MINUTES TILL TRAIN: ${minutesTillTrain}`);
+
+    const nextTrain = moment().add(minutesTillTrain, 'minutes');
+    console.log(`ARRIVAL TIME: ${moment(nextTrain).format('hh:mm')}`);
+
+    $('#train-table > tbody').append(`<tr><td>${trainName}</td><td>${trainDestination}</td><td>${trainFrequency}</td>
+    <td>${nextTrain}</td><td>${minutesTillTrain}</td></tr>`);
   });
 }); // Document ready
